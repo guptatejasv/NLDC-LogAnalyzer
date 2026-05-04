@@ -16,7 +16,7 @@
 ✅ **Caching System** - Reduces API calls with smart caching mechanism  
 ✅ **Comprehensive Reporting** - Executive summaries and detailed threat analysis  
 ✅ **Error Handling** - Graceful failure handling and retry logic  
-✅ **Production-Ready** - Logging, modular design, and best practices  
+✅ **Production-Ready** - Logging, modular design, and best practices
 
 ---
 
@@ -59,22 +59,26 @@ log-analyzer-ai/
 ### Installation
 
 1. **Clone/Navigate to project directory:**
+
 ```bash
 cd log-analyzer-ai
 ```
 
 2. **Create virtual environment (recommended):**
+
 ```bash
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
 3. **Install dependencies:**
+
 ```bash
 pip install -r requirements.txt
 ```
 
 4. **Configure API keys:**
+
 ```bash
 # Copy and edit .env file with your API keys
 copy .env .env.backup
@@ -84,6 +88,7 @@ copy .env .env.backup
 ```
 
 5. **Run the analyzer:**
+
 ```bash
 python main.py
 # Or with custom CSV:
@@ -101,6 +106,7 @@ python main.py path/to/your/logs.csv
 **Headers:** `x-apikey: YOUR_KEY`
 
 **Data Extracted:**
+
 - Malicious detection count
 - Suspicious detection count
 - Harmless detection count
@@ -108,6 +114,7 @@ python main.py path/to/your/logs.csv
 - ASN (Autonomous System Number)
 
 **Get API Key:**
+
 1. Visit: https://www.virustotal.com/gui/home/upload
 2. Sign up for free account
 3. Navigate to Settings → API key
@@ -119,6 +126,7 @@ python main.py path/to/your/logs.csv
 **Endpoint:** `https://api.abuseipdb.com/api/v2/check`
 
 **Data Extracted:**
+
 - Abuse Confidence Score (0-100%)
 - Usage Type (VPN, Proxy, etc.)
 - ISP information
@@ -127,6 +135,7 @@ python main.py path/to/your/logs.csv
 - Last reported date
 
 **Get API Key:**
+
 1. Visit: https://www.abuseipdb.com
 2. Sign up for free account
 3. Navigate to Account → API
@@ -141,18 +150,18 @@ The rule engine applies intelligent logic to classify IPs:
 
 ### Priority Order (Highest to Lowest)
 
-| Priority | Rule | Classification | Details |
-|----------|------|-----------------|---------|
-| 1 | IP in Cloudflare/CDN ranges | `NORMAL_TRAFFIC_CDN` | Benign CDN traffic |
-| 2 | IP in Google/AWS/Microsoft ranges | `NORMAL_TRAFFIC_CDN` | Known infrastructure |
-| 3 | IP in Telegram ranges (149.154.*) | `POLICY_VIOLATION` | Messaging service |
-| 4 | AbuseIPDB score > 75% | `MALICIOUS` | Critical threat |
-| 5 | AbuseIPDB score > 50% | `SUSPICIOUS` | Suspicious threat |
-| 6 | VirusTotal malicious ≥ 10 | `MALICIOUS` | Multiple detections |
-| 7 | VirusTotal malicious > 5 | `SUSPICIOUS` | Few detections |
-| 8 | AbuseIPDB reports > 20 | `SUSPICIOUS` | Many reports |
-| 9 | Combined threat indicators | `SUSPICIOUS` | Minor indicators |
-| 10 | No indicators | `CLEAN` | Safe IP |
+| Priority | Rule                               | Classification       | Details              |
+| -------- | ---------------------------------- | -------------------- | -------------------- |
+| 1        | IP in Cloudflare/CDN ranges        | `NORMAL_TRAFFIC_CDN` | Benign CDN traffic   |
+| 2        | IP in Google/AWS/Microsoft ranges  | `NORMAL_TRAFFIC_CDN` | Known infrastructure |
+| 3        | IP in Telegram ranges (149.154.\*) | `POLICY_VIOLATION`   | Messaging service    |
+| 4        | AbuseIPDB score > 75%              | `MALICIOUS`          | Critical threat      |
+| 5        | AbuseIPDB score > 50%              | `SUSPICIOUS`         | Suspicious threat    |
+| 6        | VirusTotal malicious ≥ 10          | `MALICIOUS`          | Multiple detections  |
+| 7        | VirusTotal malicious > 5           | `SUSPICIOUS`         | Few detections       |
+| 8        | AbuseIPDB reports > 20             | `SUSPICIOUS`         | Many reports         |
+| 9        | Combined threat indicators         | `SUSPICIOUS`         | Minor indicators     |
+| 10       | No indicators                      | `CLEAN`              | Safe IP              |
 
 ---
 
@@ -168,6 +177,7 @@ Source IP,Destination IP,Port
 ```
 
 ### Required Columns
+
 - **Source IP:** Originating IP address
 - **Destination IP:** Target IP address (analyzed)
 - **Port:** Connection port number
@@ -179,12 +189,14 @@ Source IP,Destination IP,Port
 The application implements intelligent caching to optimize API usage:
 
 ### Cache Features
+
 - **Persistent:** Cache saved to `cache/ip_cache.json`
 - **Expiration:** Configurable TTL (default: 24 hours)
 - **Automatic:** No manual cache management needed
 - **Configurable:** Enable/disable via `.env`
 
 ### Configuration
+
 ```env
 ENABLE_CACHING=True           # Enable/disable caching
 CACHE_EXPIRY_HOURS=24         # Cache validity period
@@ -217,6 +229,7 @@ RETRY_DELAY=2                 # Delay between retries in seconds
 ```
 
 ### Logging Levels
+
 - **DEBUG:** Detailed diagnostic information
 - **INFO:** General informational messages
 - **WARNING:** Warning messages for issues
@@ -232,7 +245,9 @@ Logs are saved to `logs/analyzer.log` with rotation.
 ### Report Types
 
 #### 1. Executive Summary
+
 Shows overall statistics and threat counts:
+
 ```
 EXECUTIVE SUMMARY
 ────────────────────────────────────────────────────────────────────────────────
@@ -251,7 +266,9 @@ Total threats detected: 3
 ```
 
 #### 2. Table View
+
 Compact table format for quick overview:
+
 ```
 IP Address           Status               Confidence   Threats
 ────────────────────────────────────────────────────────────
@@ -260,7 +277,9 @@ IP Address           Status               Confidence   Threats
 ```
 
 #### 3. Detailed Report
+
 Complete analysis for each IP:
+
 ```
 ════════════════════════════════════════════════════════════════════════════════
 ✕ IP ANALYSIS: 208.91.112.55
@@ -293,18 +312,21 @@ Reasoning: AbuseIPDB confidence score: 45%
 The application gracefully handles various error scenarios:
 
 ### API Failures
+
 - **Rate Limiting:** Automatic retry with exponential backoff
 - **Timeouts:** Configurable timeout with retry logic
 - **Network Errors:** Graceful degradation with error logging
 - **Invalid Responses:** Error handling with fallback values
 
 ### Data Validation
+
 - **Invalid IPs:** Automatically filtered and logged
 - **Missing Columns:** Clear error messages with column names
 - **Corrupt CSV:** Detailed parsing error information
 - **Missing API Keys:** Warning messages with optional functionality
 
 ### Recovery
+
 - Application continues processing even if individual IPs fail
 - Failed IPs marked with `ERROR` classification
 - Detailed logs for troubleshooting
@@ -315,6 +337,7 @@ The application gracefully handles various error scenarios:
 ## 📚 Advanced Usage
 
 ### Custom CSV Path
+
 ```bash
 python main.py /path/to/custom/logs.csv
 ```
@@ -348,7 +371,7 @@ Edit `src/rules.py` to add custom classification rules:
 @staticmethod
 def classify_ip(enriched_data: Dict) -> Tuple[str, str]:
     # ... existing rules ...
-    
+
     # Add custom rule
     ip = enriched_data.get('ip', '')
     if ip.startswith('203.0.113'):  # Your custom range
@@ -360,17 +383,20 @@ def classify_ip(enriched_data: Dict) -> Tuple[str, str]:
 ## 🔐 Security Considerations
 
 ### API Key Protection
+
 - ✅ Store API keys in `.env` (not in version control)
 - ✅ Add `.env` to `.gitignore`
 - ✅ Never commit credentials
 - ✅ Rotate keys periodically
 
 ### Data Privacy
+
 - Cache stored locally in `cache/` directory
 - No data sent to third parties beyond APIs
 - Logs contain IP addresses (secure logs appropriately)
 
 ### Network Security
+
 - All API calls use HTTPS
 - Timeout protection against hanging connections
 - Error handling prevents information leakage
@@ -381,14 +407,15 @@ def classify_ip(enriched_data: Dict) -> Tuple[str, str]:
 
 ### Typical Performance
 
-| Metric | Value |
-|--------|-------|
-| IPs per second | 2-5 |
-| Cache hit reduction | 80-90% |
-| Memory usage | ~50MB for 1000 IPs |
-| API calls reduction | 75% with caching |
+| Metric              | Value              |
+| ------------------- | ------------------ |
+| IPs per second      | 2-5                |
+| Cache hit reduction | 80-90%             |
+| Memory usage        | ~50MB for 1000 IPs |
+| API calls reduction | 75% with caching   |
 
 ### Optimization Tips
+
 - Use caching to reduce API calls
 - Batch process large CSV files
 - Run during off-peak hours
@@ -399,29 +426,38 @@ def classify_ip(enriched_data: Dict) -> Tuple[str, str]:
 ## 🐛 Troubleshooting
 
 ### Issue: "API key not configured"
+
 **Solution:** Check `.env` file has correct API keys without extra spaces
 
 ### Issue: Rate limiting errors
-**Solution:** 
+
+**Solution:**
+
 - Reduce batch size
 - Increase `RETRY_DELAY` in config
 - Wait before running again
 - Consider paid API plans
 
 ### Issue: Cache not working
+
 **Solution:**
+
 - Verify `ENABLE_CACHING=True` in `.env`
 - Check `cache/` directory permissions
 - Delete `ip_cache.json` to reset cache
 
 ### Issue: Invalid IP format errors
+
 **Solution:**
+
 - Validate CSV format
 - Ensure "Destination IP" column exists
 - Check for blank cells in IP column
 
 ### Issue: Module import errors
+
 **Solution:**
+
 ```bash
 pip install --upgrade -r requirements.txt
 python -m pip install --force-reinstall requests
@@ -431,18 +467,19 @@ python -m pip install --force-reinstall requests
 
 ## 📖 Dependencies
 
-| Package | Version | Purpose |
-|---------|---------|---------|
-| pandas | 2.0.3+ | CSV parsing and data handling |
-| requests | 2.31.0+ | HTTP requests to APIs |
-| python-dotenv | 1.0.0+ | Environment variable management |
-| pydantic | 2.3.0+ | Data validation (optional) |
+| Package       | Version | Purpose                         |
+| ------------- | ------- | ------------------------------- |
+| pandas        | 2.0.3+  | CSV parsing and data handling   |
+| requests      | 2.31.0+ | HTTP requests to APIs           |
+| python-dotenv | 1.0.0+  | Environment variable management |
+| pydantic      | 2.3.0+  | Data validation (optional)      |
 
 ---
 
 ## 📝 Logging
 
 ### Log Levels
+
 All actions logged to `logs/analyzer.log`:
 
 ```
@@ -453,6 +490,7 @@ All actions logged to `logs/analyzer.log`:
 ```
 
 ### Monitoring Logs
+
 ```bash
 # Watch logs in real-time
 tail -f logs/analyzer.log
@@ -469,21 +507,25 @@ grep "208.91.112.55" logs/analyzer.log
 ## 🎯 Use Cases
 
 ### SOC Analysts
+
 - Review suspicious outbound connections
 - Investigate policy violations
 - Identify data exfiltration patterns
 
 ### Threat Intelligence Teams
+
 - Enrich internal threat data
 - Cross-reference with public sources
 - Build IP reputation profiles
 
 ### Network Security Teams
+
 - Analyze firewall logs
 - Identify compromised endpoints
 - Validate threat detection systems
 
 ### Incident Response
+
 - Rapid IP classification
 - Threat severity assessment
 - Supporting investigation evidence
@@ -525,6 +567,7 @@ MIT License - See LICENSE file for details
 ## 👨‍💻 Contributing
 
 Contributions welcome! Please follow:
+
 1. Fork the repository
 2. Create feature branch
 3. Commit changes
@@ -536,6 +579,7 @@ Contributions welcome! Please follow:
 ## 📧 Support
 
 For issues, questions, or suggestions:
+
 1. Check existing documentation
 2. Review logs in `logs/analyzer.log`
 3. Verify API credentials
@@ -595,6 +639,6 @@ Total IPs analyzed: 10
 
 ---
 
-**Built with ❤️ for cybersecurity professionals**
+**Built with ❤️ by Tejasv Kumar for cybersecurity professionals**
 
 Version 1.0 | Last Updated: May 2024

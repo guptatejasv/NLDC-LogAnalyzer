@@ -8,6 +8,7 @@
 ## 📦 Project Overview
 
 **Log Analyzer AI** is a fully-functional, production-ready Python application that:
+
 - Parses network security logs in CSV format
 - Extracts destination IP addresses
 - Enriches IPs with multi-source threat intelligence (VirusTotal, AbuseIPDB)
@@ -19,6 +20,7 @@
 ## ✅ Completed Components
 
 ### 1. **Core Application** (`main.py`)
+
 - ✅ Complete pipeline orchestration
 - ✅ 5-step analysis workflow
 - ✅ Error handling and graceful degradation
@@ -26,6 +28,7 @@
 - ✅ Command-line interface
 
 ### 2. **CSV Log Parser** (`src/parser.py`)
+
 - ✅ Robust CSV parsing with pandas
 - ✅ Destination IP extraction
 - ✅ IP validation logic
@@ -33,6 +36,7 @@
 - ✅ Error handling for malformed data
 
 ### 3. **Threat Intelligence Enrichment** (`src/enrich.py`)
+
 - ✅ VirusTotal API integration
   - Malicious/suspicious/harmless detection counts
   - Country and ASN extraction
@@ -48,12 +52,13 @@
 - ✅ Robust error handling and timeouts
 
 ### 4. **Rule-Based Classification Engine** (`src/rules.py`)
+
 - ✅ Multi-tier classification logic
 - ✅ Known IP ranges:
-  - Cloudflare (104.16-31, 141.101, 162.*, 172.64-67)
-  - Google (8.8.*, 142.25*, 172.217-223)
-  - AWS (52.*, 54.*)
-  - Microsoft (13.*, 40.*, 52.114-118)
+  - Cloudflare (104.16-31, 141.101, 162.\*, 172.64-67)
+  - Google (8.8._, 142.25_, 172.217-223)
+  - AWS (52._, 54._)
+  - Microsoft (13._, 40._, 52.114-118)
   - Telegram (149.154-155)
 - ✅ Threat scoring system
 - ✅ 10 classification categories:
@@ -66,6 +71,7 @@
   7. ERROR
 
 ### 5. **Report Generation** (`src/output.py`)
+
 - ✅ Executive summary
 - ✅ Table view with sorting
 - ✅ Detailed IP analysis reports
@@ -74,6 +80,7 @@
 - ✅ Professional formatting
 
 ### 6. **Configuration & Logging** (`config/config.py`, `src/logger_setup.py`)
+
 - ✅ Centralized configuration
 - ✅ Environment variable management (.env)
 - ✅ Rotating file logging
@@ -81,11 +88,13 @@
 - ✅ Logs saved to `logs/analyzer.log`
 
 ### 7. **Sample Data** (`data/logs.csv`)
+
 - ✅ 10 sample network log records
 - ✅ Proper CSV format with headers
 - ✅ Mix of legitimate and suspicious IPs
 
 ### 8. **Documentation**
+
 - ✅ **README.md** - 500+ line comprehensive guide
   - Quick start instructions
   - API integration details
@@ -98,6 +107,7 @@
 - ✅ **validate_setup.py** - Environment validation script
 
 ### 9. **Project Structure**
+
 ```
 log-analyzer-ai/
 ├── data/
@@ -131,22 +141,23 @@ log-analyzer-ai/
 
 ## 📊 Application Statistics
 
-| Metric | Value |
-|--------|-------|
-| Total Lines of Code | ~1,700+ |
-| Python Modules | 6 core + 2 config |
-| Functions | 35+ |
-| API Integrations | 2 (VirusTotal, AbuseIPDB) |
-| Classification Rules | 10+ |
-| IP Range Patterns | 40+ |
-| Error Handlers | 15+ |
-| Logging Events | 20+ |
+| Metric               | Value                     |
+| -------------------- | ------------------------- |
+| Total Lines of Code  | ~1,700+                   |
+| Python Modules       | 6 core + 2 config         |
+| Functions            | 35+                       |
+| API Integrations     | 2 (VirusTotal, AbuseIPDB) |
+| Classification Rules | 10+                       |
+| IP Range Patterns    | 40+                       |
+| Error Handlers       | 15+                       |
+| Logging Events       | 20+                       |
 
 ---
 
 ## 🚀 Features Implemented
 
 ### Core Features
+
 - ✅ Multi-source threat intelligence
 - ✅ Intelligent rule-based classification
 - ✅ Caching system (75-90% API reduction)
@@ -155,6 +166,7 @@ log-analyzer-ai/
 - ✅ Full logging and auditing
 
 ### Advanced Features
+
 - ✅ Exponential backoff retry logic
 - ✅ Rate limiting handling
 - ✅ Configurable timeouts
@@ -165,6 +177,7 @@ log-analyzer-ai/
 - ✅ Custom rule extensibility
 
 ### Reporting Features
+
 - ✅ Executive summary
 - ✅ Table view with sorting
 - ✅ Detailed IP analysis
@@ -216,6 +229,7 @@ Log Analyzer AI - Setup Validation
 ## 🧪 Test Run Results
 
 ### Sample Analysis Output
+
 ```
 EXECUTIVE SUMMARY
 ────────────────────────────────────────────────────────────────────────────────
@@ -232,6 +246,7 @@ Total threats detected: 2
 ```
 
 ### IPs Classified
+
 - ✅ **149.154.167.99** → POLICY_VIOLATION (Telegram)
 - ✅ **149.154.170.110** → POLICY_VIOLATION (Telegram)
 - ✅ **8.8.8.8** → NORMAL_TRAFFIC_CDN (Google)
@@ -248,6 +263,7 @@ Total threats detected: 2
 ## 🔧 Installation & Setup
 
 ### Quick Start (3 Steps)
+
 ```bash
 # 1. Navigate to project
 cd log-analyzer-ai
@@ -260,6 +276,7 @@ python main.py
 ```
 
 ### With API Keys (Optional)
+
 ```bash
 # Edit .env with your keys:
 VT_API_KEY=your_virustotal_key
@@ -273,12 +290,12 @@ python main.py
 
 ## 📋 Dependencies
 
-| Package | Version | Purpose |
-|---------|---------|---------|
-| pandas | 2.0.3+ | CSV parsing and data handling |
-| requests | 2.31.0+ | HTTP requests to threat APIs |
-| python-dotenv | 1.0.0+ | Environment variable management |
-| pydantic | 2.3.0+ | Data validation (optional) |
+| Package       | Version | Purpose                         |
+| ------------- | ------- | ------------------------------- |
+| pandas        | 2.0.3+  | CSV parsing and data handling   |
+| requests      | 2.31.0+ | HTTP requests to threat APIs    |
+| python-dotenv | 1.0.0+  | Environment variable management |
+| pydantic      | 2.3.0+  | Data validation (optional)      |
 
 **Total size:** ~100MB (including dependencies)
 
@@ -287,21 +304,25 @@ python main.py
 ## 🎯 Use Cases
 
 ### ✅ For SOC Analysts
+
 - Analyze firewall logs for suspicious outbound traffic
 - Investigate policy violations (e.g., Telegram access)
 - Identify potentially compromised endpoints
 
 ### ✅ For Threat Intelligence Teams
+
 - Enrich internal IP databases with external threat data
 - Cross-reference with public threat sources
 - Build IP reputation profiles
 
 ### ✅ For Security Teams
+
 - Validate threat detection system accuracy
 - Investigate network incidents
 - Generate threat reports for compliance
 
 ### ✅ For Incident Response
+
 - Rapidly classify suspicious IPs
 - Assess threat severity
 - Provide supporting evidence for investigations
@@ -311,17 +332,20 @@ python main.py
 ## 🔒 Security Features
 
 ### API Key Protection
+
 - ✅ Environment variables in `.env` (excluded from git)
 - ✅ No hardcoded credentials
 - ✅ Safe error messages
 
 ### Data Privacy
+
 - ✅ Local caching (no external storage)
 - ✅ HTTPS for all API calls
 - ✅ Timeout protection
 - ✅ Graceful error handling
 
 ### Error Handling
+
 - ✅ Rate limiting protection
 - ✅ Network timeout handling
 - ✅ Retry logic with backoff
@@ -331,23 +355,25 @@ python main.py
 
 ## 📈 Performance Characteristics
 
-| Scenario | Performance |
-|----------|------------|
-| 10 IPs without cache | ~20 seconds |
-| 10 IPs with cache | ~2 seconds |
-| Memory for 1000 IPs | ~50MB |
-| API call reduction | 75-90% with caching |
-| Rate limit handling | Automatic backoff |
+| Scenario             | Performance         |
+| -------------------- | ------------------- |
+| 10 IPs without cache | ~20 seconds         |
+| 10 IPs with cache    | ~2 seconds          |
+| Memory for 1000 IPs  | ~50MB               |
+| API call reduction   | 75-90% with caching |
+| Rate limit handling  | Automatic backoff   |
 
 ---
 
 ## 📝 Logging
 
 ### Log Locations
+
 - **Console:** Real-time output during execution
 - **File:** `logs/analyzer.log` (rotating, 10MB per file, 5 backups)
 
 ### Log Levels
+
 - DEBUG: Detailed diagnostic information
 - INFO: General operational information
 - WARNING: Warning messages for issues
@@ -355,6 +381,7 @@ python main.py
 - CRITICAL: Critical system errors
 
 ### Example Log Entry
+
 ```
 2026-05-04 11:38:03 - parser - INFO - Successfully read CSV file
 2026-05-04 11:38:03 - enrich - DEBUG - Cache hit for 208.91.112.55_vt
@@ -388,6 +415,7 @@ python main.py
 ## 🚀 Ready for Production
 
 ### ✅ Code Quality
+
 - Modular design with separation of concerns
 - Comprehensive error handling
 - Proper logging and auditing
@@ -395,6 +423,7 @@ python main.py
 - Professional code style
 
 ### ✅ Reliability
+
 - Graceful failure handling
 - Retry logic with backoff
 - Rate limit protection
@@ -402,6 +431,7 @@ python main.py
 - Cache management
 
 ### ✅ Maintainability
+
 - Clean code structure
 - Well-documented functions
 - Extensible rule engine
@@ -409,6 +439,7 @@ python main.py
 - Comprehensive README
 
 ### ✅ Performance
+
 - Intelligent caching (75-90% reduction)
 - Efficient data structures
 - Minimal memory footprint
@@ -419,6 +450,7 @@ python main.py
 ## 📚 Documentation Files
 
 ### README.md (530+ lines)
+
 - Comprehensive project documentation
 - API integration details
 - Classification rules explanation
@@ -427,17 +459,20 @@ python main.py
 - Use cases and workflows
 
 ### QUICKSTART.md
+
 - 5-minute setup guide
 - Quick reference
 - Architecture overview
 - Key features
 
 ### .env.example
+
 - Configuration template
 - API key placeholders
 - Settings reference
 
 ### validate_setup.py
+
 - Environment checker
 - Dependency validator
 - Configuration verifier
@@ -447,29 +482,34 @@ python main.py
 ## 🎓 Key Design Decisions
 
 ### 1. **Modular Architecture**
+
 - Each module has single responsibility
 - Easy to extend and maintain
 - Can be used independently
 
 ### 2. **Rule-Based Classification**
+
 - Deterministic and explainable
 - No ML dependency
 - Fast and efficient
 - Easy to customize
 
 ### 3. **Intelligent Caching**
+
 - Reduces API costs
 - Improves performance
 - TTL-based expiration
 - Persistent storage
 
 ### 4. **Graceful Degradation**
+
 - Works without API keys
 - Handles API failures
 - Continues on errors
 - Provides meaningful feedback
 
 ### 5. **Comprehensive Logging**
+
 - Audit trail for compliance
 - Troubleshooting support
 - Performance monitoring
@@ -495,17 +535,20 @@ python main.py
 ## 📞 Next Steps
 
 ### To Use Immediately
+
 1. ✅ Run: `python main.py` (with sample data)
 2. ✅ Review reports generated
 3. ✅ Customize rules in `src/rules.py`
 4. ✅ Add your own CSV logs
 
 ### To Enable Full Features
+
 1. Get API keys from VirusTotal and AbuseIPDB
 2. Add to `.env` file
 3. Run again with external threat intelligence
 
 ### To Extend
+
 1. Add custom IP ranges to `src/rules.py`
 2. Integrate more threat intelligence APIs
 3. Create custom report formats
@@ -536,20 +579,20 @@ python main.py
 
 ## 📊 Final Statistics
 
-| Item | Count |
-|------|-------|
-| Python Files | 8 |
-| Core Modules | 6 |
-| Configuration Files | 5 |
-| Documentation Files | 4 |
-| Total Lines of Code | 1,700+ |
-| Functions | 35+ |
-| Classes | 5 |
-| Error Handlers | 15+ |
-| Test Cases (Implicit) | 10 |
-| API Integrations | 2 |
-| Classification Rules | 10+ |
-| IP Range Patterns | 40+ |
+| Item                  | Count  |
+| --------------------- | ------ |
+| Python Files          | 8      |
+| Core Modules          | 6      |
+| Configuration Files   | 5      |
+| Documentation Files   | 4      |
+| Total Lines of Code   | 1,700+ |
+| Functions             | 35+    |
+| Classes               | 5      |
+| Error Handlers        | 15+    |
+| Test Cases (Implicit) | 10     |
+| API Integrations      | 2      |
+| Classification Rules  | 10+    |
+| IP Range Patterns     | 40+    |
 
 ---
 
@@ -566,7 +609,7 @@ python main.py
 ✅ Provides comprehensive logging  
 ✅ Follows security best practices  
 ✅ Includes extensive documentation  
-✅ Is ready for immediate deployment  
+✅ Is ready for immediate deployment
 
 **The system successfully simulates a SOC analyst by understanding logs, checking threat intelligence, applying intelligent logic, and producing meaningful security insights.**
 
@@ -575,13 +618,13 @@ python main.py
 **Project Status: ✅ COMPLETE**  
 **Quality: ⭐⭐⭐⭐⭐ Production Ready**  
 **Documentation: ⭐⭐⭐⭐⭐ Comprehensive**  
-**Code Quality: ⭐⭐⭐⭐⭐ Professional**  
+**Code Quality: ⭐⭐⭐⭐⭐ Professional**
 
-**Built with ❤️ for cybersecurity professionals**
+**Built with ❤️ by Tejasv Kumar for cybersecurity professionals**
 
 ---
 
-*For detailed usage instructions, see README.md*  
-*For quick setup, see QUICKSTART.md*  
-*To verify setup, run: python validate_setup.py*  
-*To analyze logs, run: python main.py*
+_For detailed usage instructions, see README.md_  
+_For quick setup, see QUICKSTART.md_  
+_To verify setup, run: python validate_setup.py_  
+_To analyze logs, run: python main.py_
