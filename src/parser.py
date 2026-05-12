@@ -104,6 +104,42 @@ class LogParser:
             logger.error(f"Error extracting destination IPs: {e}")
             raise
     
+    def categorize_communication(self):
+        """
+        Categorize communication based on destination port and connection type.
+        Adds 'Service' and 'Communication Type' columns to the DataFrame.
+        """
+        if self.df is None:
+            raise RuntimeError("Must call parse() before categorizing communication")
+
+        _COMMON_PORTS = {
+            20: 'FTP Data',
+            21: 'FTP Control',
+            22: 'SSH',
+            23: 'Telnet',
+            25: 'SMTP',
+            53: 'DNS',
+            67: 'DHCP',
+            68: 'DHCP',
+            80: 'HTTP',
+            110: 'POP3',
+            143: 'IMAP',
+            3389: 'RDP',
+            443: 'HTTPS',
+            445: 'SMB',
+            3306: 'MySQL',
+            5432: 'PostgreSQL',
+            8080: 'HTTP-Alt',
+            27017: 'MongoDB',
+        }
+
+        def get_service(port):
+            return _COMMON_PORTS.get(port, 'Other')
+
+        self.df['Service'] = self.df['Destination Port'].apply(get_service)
+        self.df['Communication Type'] = self.df['Connection Type'] + ' - ' + self.df['Service']
+        logger.info("Categorized communication types based on port and connection type.")
+    
     def validate_ip(self, ip: str) -> bool:
         """
         Validate if a string is a valid IP address format

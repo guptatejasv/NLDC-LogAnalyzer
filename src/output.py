@@ -30,6 +30,7 @@ class ReportGenerator:
     RED_BG = '\033[41m'
     GREEN_BG = '\033[42m'
     YELLOW_BG = '\033[43m'
+    PURPLE = '\033[35m'
     
     @staticmethod
     def _get_color_for_classification(classification: str) -> str:
@@ -236,3 +237,65 @@ class ReportGenerator:
             print(f"{ip:<20} {color}{classification:<20}{ReportGenerator.RESET} {abuse_score:>6}%        {total_threats:<10}")
         
         print(f"{ReportGenerator.BOLD}{'─'*70}{ReportGenerator.RESET}\n")
+    
+    @staticmethod
+    def print_communication_analysis(comm_analysis: Dict, df):
+        """
+        Print detailed communication type analysis
+        
+        Args:
+            comm_analysis: Dictionary containing communication analysis results
+            df: DataFrame containing the parsed logs
+        """
+        print(f"\n{ReportGenerator.BOLD}{ReportGenerator.UNDERLINE}{'='*80}")
+        print(f"DETAILED COMMUNICATION ANALYSIS REPORT")
+        print(f"{'='*80}{ReportGenerator.RESET}\n")
+        
+        # Overall communication counts
+        overall_counts = comm_analysis.get('overall_communication_counts', {})
+        if overall_counts:
+            print(f"{ReportGenerator.BOLD}{ReportGenerator.BLUE}1. OVERALL COMMUNICATION BREAKDOWN{ReportGenerator.RESET}")
+            print(f"{ReportGenerator.BOLD}─{ReportGenerator.RESET}" * 40)
+            for comm_type, count in sorted(overall_counts.items(), key=lambda x: x[1], reverse=True):
+                percentage = (count / len(df)) * 100 if len(df) > 0 else 0
+                bar_length = int(percentage / 5)
+                bar = "█" * bar_length
+                print(f"  {comm_type:<40} {count:>4} ({percentage:>5.1f}%) {bar}")
+            print()
+        
+        # Top 5 communication types
+        top_5 = comm_analysis.get('top_5_communication_types', {})
+        if top_5:
+            print(f"{ReportGenerator.BOLD}{ReportGenerator.CYAN}2. TOP 5 COMMUNICATION TYPES{ReportGenerator.RESET}")
+            print(f"{ReportGenerator.BOLD}─{ReportGenerator.RESET}" * 40)
+            for idx, (comm_type, count) in enumerate(top_5.items(), 1):
+                percentage = (count / len(df)) * 100 if len(df) > 0 else 0
+                print(f"  #{idx} {comm_type:<38} {count:>4} ({percentage:>5.1f}%)")
+            print()
+        
+        # Communication by action
+        comm_by_action = comm_analysis.get('communication_by_action', {})
+        if comm_by_action:
+            print(f"{ReportGenerator.BOLD}{ReportGenerator.MAGENTA}3. COMMUNICATION BY ACTION STATUS{ReportGenerator.RESET}")
+            print(f"{ReportGenerator.BOLD}─{ReportGenerator.RESET}" * 40)
+            for comm_type in sorted(comm_by_action.keys()):
+                actions = comm_by_action[comm_type]
+                print(f"  {ReportGenerator.BOLD}{comm_type}{ReportGenerator.RESET}")
+                for action, count in actions.items():
+                    action_color = ReportGenerator.GREEN if action.lower() in ['allow', 'accept'] else ReportGenerator.RED
+                    print(f"    • {action_color}{action}{ReportGenerator.RESET}: {count}")
+            print()
+        
+        # Summary statistics
+        total_unique = comm_analysis.get('total_unique_communication_types', 0)
+        total_records = len(df)
+        print(f"{ReportGenerator.BOLD}{ReportGenerator.YELLOW}4. SUMMARY STATISTICS{ReportGenerator.RESET}")
+        print(f"{ReportGenerator.BOLD}─{ReportGenerator.RESET}" * 40)
+        print(f"  • Total unique communication types: {ReportGenerator.BOLD}{total_unique}{ReportGenerator.RESET}")
+        print(f"  • Total log records analyzed:       {ReportGenerator.BOLD}{total_records}{ReportGenerator.RESET}")
+        if total_unique > 0:
+            avg_per_type = total_records / total_unique
+            print(f"  • Average records per type:        {ReportGenerator.BOLD}{avg_per_type:.2f}{ReportGenerator.RESET}")
+        print()
+        
+        print(f"{ReportGenerator.BOLD}{'='*80}{ReportGenerator.RESET}\n")

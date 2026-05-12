@@ -17,6 +17,7 @@ from src.parser import LogParser
 from src.enrich import IPEnricher
 from src.rules import RuleEngine
 from src.output import ReportGenerator
+from src.communication_analyzer import CommunicationAnalyzer
 from config.config import Config
 
 # Setup logger
@@ -54,6 +55,10 @@ class LogAnalyzerAI:
             destination_ips = self.parser.extract_destination_ips()
             logger.info(f"Found {len(destination_ips)} unique destination IPs")
             
+            # Step 2.5: Categorize communication
+            logger.info("\n[STEP 2.5] Categorizing communication types...")
+            self.parser.categorize_communication()
+            
             # Step 3: Validate IPs
             logger.info("\n[STEP 3] Validating IP addresses...")
             valid_ips = [ip for ip in destination_ips if self.parser.validate_ip(ip)]
@@ -65,6 +70,12 @@ class LogAnalyzerAI:
             # Step 4: Enrich IPs with threat intelligence
             logger.info("\n[STEP 4] Enriching IPs with threat intelligence...")
             self._enrich_and_classify(valid_ips)
+
+            # Step 4.5: Analyze communication types
+            logger.info("\n[STEP 4.5] Analyzing communication patterns...")
+            communication_analyzer = CommunicationAnalyzer(self.parser.df)
+            communication_analysis_results = communication_analyzer.analyze()
+            self.results.append({"communication_analysis": communication_analysis_results})
             
             # Step 5: Generate reports
             logger.info("\n[STEP 5] Generating reports...")
@@ -155,14 +166,20 @@ class LogAnalyzerAI:
         # Detailed individual reports
         ReportGenerator.print_detailed_report(self.results)
         
+        # Print communication analysis
+        comm_results = [r for r in self.results if 'communication_analysis' in r]
+        if comm_results and comm_results[0]['communication_analysis']:
+            logger.info(f"\n[COMMUNICATION ANALYSIS]")
+            ReportGenerator.print_communication_analysis(comm_results[0]['communication_analysis'], self.parser.df)
+        
         # Print detailed analysis for threats
-        threats = [r for r in self.results if r['classification'] in ['MALICIOUS', 'SUSPICIOUS', 'POLICY_VIOLATION']]
+        threats = [r for r in self.results if r.get('classification') in ['MALICIOUS', 'SUSPICIOUS', 'POLICY_VIOLATION']]
         if threats:
             logger.info(f"\nDetailed analysis for {len(threats)} threat(s):")
             for result in threats:
                 ReportGenerator.print_ip_summary(result)
         
-        logger.info(f"\n[SUCCESS] Analysis complete. Processed {len(self.results)} IPs")
+        logger.info(f"\n[SUCCESS] Analysis complete. Processed {len([r for r in self.results if 'ip' in r])} IPs")
 
 
 def main():
