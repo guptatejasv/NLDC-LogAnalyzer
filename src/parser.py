@@ -35,41 +35,77 @@ class LogParser:
     
     def parse(self) -> pd.DataFrame:
         """
-        Parse the CSV file and extract logs
-        
-        Returns:
-            DataFrame containing the parsed logs
-            
-        Raises:
-            ValueError: If required columns are missing
+        Parse CSV or Excel file.
         """
+
         try:
-            self.df = pd.read_csv(self.csv_path)
-            logger.info(f"Successfully read CSV file: {self.csv_path}")
-            logger.info(f"Total records: {len(self.df)}")
-            
-            # Validate required columns - support both 'Port' and 'Destination Port'
-            required_columns = ['Source IP', 'Destination IP']
-            port_columns = ['Port', 'Destination Port']
-            
-            missing_columns = [col for col in required_columns if col not in self.df.columns]
-            has_port = any(col in self.df.columns for col in port_columns)
-            
+            extension = self.csv_path.suffix.lower()
+
+            # ---------- CSV ----------
+            if extension == ".csv":
+
+                encodings = ["utf-8", "utf-8-sig", "cp1252", "latin1"]
+
+                for enc in encodings:
+                    try:
+                        self.df = pd.read_csv(self.csv_path, encoding=enc)
+                        logger.info(f"CSV loaded using encoding: {enc}")
+                        break
+                    except UnicodeDecodeError:
+                        continue
+
+                if self.df is None:
+                    raise ValueError("Unable to read CSV. Unsupported encoding.")
+
+            # ---------- Excel ----------
+            elif extension in [".xlsx", ".xls"]:
+
+                self.df = pd.read_excel(self.csv_path)
+                logger.info("Excel file loaded successfully.")
+
+            else:
+                raise ValueError(
+                    "Unsupported file type. Please upload CSV or Excel."
+                )
+
+            logger.info(f"Successfully loaded {len(self.df)} records")
+
+            # -----------------------------
+            # Validate Columns
+            # -----------------------------
+
+            required_columns = [
+                "Source IP",
+                "Destination IP"
+            ]
+
+            port_columns = [
+                "Port",
+                "Destination Port"
+            ]
+
+            missing_columns = [
+                col for col in required_columns
+                if col not in self.df.columns
+            ]
+
+            has_port = any(
+                col in self.df.columns
+                for col in port_columns
+            )
+
             if missing_columns or not has_port:
-                error_msg = f"Missing required columns. Required: {required_columns} and one of {port_columns}"
-                raise ValueError(error_msg)
-            
-            # Normalize port column if needed
-            if 'Destination Port' in self.df.columns and 'Port' not in self.df.columns:
-                self.df['Port'] = self.df['Destination Port']
-            
+                raise ValueError(
+                    f"Missing required columns. Required: {required_columns} and one of {port_columns}"
+                )
+
+            if "Destination Port" in self.df.columns and "Port" not in self.df.columns:
+                self.df["Port"] = self.df["Destination Port"]
+
             return self.df
-            
-        except pd.errors.ParserError as e:
-            logger.error(f"Error parsing CSV file: {e}")
-            raise ValueError(f"Invalid CSV format: {e}")
+
         except Exception as e:
-            logger.error(f"Unexpected error while parsing CSV: {e}")
+            logger.error(e)
             raise
     
     def extract_destination_ips(self) -> Set[str]:

@@ -17,10 +17,16 @@ class Config:
     # API Keys
     VT_API_KEY = os.getenv("VT_API_KEY", "")
     ABUSE_API_KEY = os.getenv("ABUSE_API_KEY", "")
+    OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "")
     
     # API Endpoints
     VT_BASE_URL = "https://www.virustotal.com/api/v3"
     ABUSE_BASE_URL = "https://api.abuseipdb.com/api/v2"
+    OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
+    
+    # AI Model Configuration
+    AI_MODEL = os.getenv("AI_MODEL", "mistralai/mistral-7b-instruct:free")
+    USE_OPENROUTER = os.getenv("USE_OPENROUTER", "True").lower() == "true"
     
     # Request Settings
     REQUEST_TIMEOUT = 10

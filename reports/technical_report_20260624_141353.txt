@@ -1,0 +1,52 @@
+
+================================================================================
+TECHNICAL THREAT INVESTIGATION REPORT
+================================================================================
+Generated: 2026-06-24 14:13:53
+
+INDICATORS OF COMPROMISE (IOCs)
+--------------------------------------------------------------------------------
+
+1. MALICIOUS IP ADDRESSES:
+No malicious IPs detected
+
+2. SUSPICIOUS IP ADDRESSES:
+No suspicious IPs detected
+
+ATTACK ANALYSIS
+--------------------------------------------------------------------------------
+
+1. COMMAND & CONTROL COMMUNICATION:
+No C2 indicators detected
+
+2. BEACONING PATTERNS:
+No beaconing behavior detected
+
+3. LATERAL MOVEMENT INDICATORS:
+No lateral movement detected
+
+4. DATA EXFILTRATION INDICATORS:
+High-Volume Data Transfers: 2 destinations
+One-Time Destination Contacts: 14 rare IPs
+
+PORT & PROTOCOL ANALYSIS
+--------------------------------------------------------------------------------
+No malicious ports detected
+
+MITRE ATT&CK MAPPING
+--------------------------------------------------------------------------------
+• T1041: Exfiltration Over C2 Channel
+  Tactic: Exfiltration
+  Confidence: HIGH
+• T1046: Network Service Scanning
+  Tactic: Discovery
+  Confidence: HIGH
+
+NETWORK FORENSICS
+--------------------------------------------------------------------------------
+Network Forensics Summary:
+
+• Unique Destinations: 32
+• Repeated Communications: 18 IPs
+
+================================================================================
