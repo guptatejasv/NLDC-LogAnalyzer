@@ -22,6 +22,7 @@ class CommunicationAnalyzer:
             df: DataFrame with 'Communication Type' and 'Action' columns.
         """
         self.df = df
+        logger.info(f"CommunicationAnalyzer initialized {df} records.")
         self.analysis_results: Dict[str, Any] = {}
         logger.info("CommunicationAnalyzer initialized.")
 

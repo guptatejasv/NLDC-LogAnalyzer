@@ -70,6 +70,7 @@ class RuleEngine:
         Returns:
             Tuple of (classification, reasoning)
         """
+        # logger.info(f"Enriched data received for classification: {enriched_data}")
         ip = enriched_data.get('ip', '')
         vt_data = enriched_data.get('virustotal', {})
         abuse_data = enriched_data.get('abuseipdb', {})

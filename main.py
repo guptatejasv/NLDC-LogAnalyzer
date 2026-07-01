@@ -3,10 +3,16 @@ Log Analyzer AI - Main Entry Point
 Advanced network security log analysis with threat intelligence integration
 """
 
+import json
 import sys
 import logging
 from pathlib import Path
-
+from typing import Dict
+import json
+import logging
+from ollama import Client
+import os
+from dotenv import load_dotenv
 # Add project root and src directory to path
 project_root = Path(__file__).parent
 sys.path.insert(0, str(project_root))
@@ -23,7 +29,12 @@ from config.config import Config
 # Setup logger
 logger = setup_logger(__name__)
 
-
+client = Client(
+    host="https://ollama.com",
+    headers={
+        "Authorization": f"Bearer {os.getenv('OLLAMA_API_KEY')}"
+    }
+)
 class LogAnalyzerAI:
     """Main application class for analyzing security logs"""
     
@@ -54,6 +65,7 @@ class LogAnalyzerAI:
             logger.info("\n[STEP 2] Extracting destination IPs...")
             destination_ips = self.parser.extract_destination_ips()
             logger.info(f"Found {len(destination_ips)} unique destination IPs")
+            logger.info(f"\nDestination IPs: {destination_ips}")
             
             # Step 2.5: Categorize communication
             logger.info("\n[STEP 2.5] Categorizing communication types...")
@@ -69,13 +81,15 @@ class LogAnalyzerAI:
             
             # Step 4: Enrich IPs with threat intelligence
             logger.info("\n[STEP 4] Enriching IPs with threat intelligence...")
-            self._enrich_and_classify(valid_ips)
+            enriched_results = self._enrich_and_classify(valid_ips)
+            # logger.info(f"Enrichment and classification completed for✈✈✈🪂🪂 {enriched_results} IPs")
 
             # Step 4.5: Analyze communication types
             logger.info("\n[STEP 4.5] Analyzing communication patterns...")
             communication_analyzer = CommunicationAnalyzer(self.parser.df)
             communication_analysis_results = communication_analyzer.analyze()
             self.results.append({"communication_analysis": communication_analysis_results})
+            logger.info(f"Enrichment appended>>>>>>>>>>>>>>>>>>>🪂🪂 {self.results} ")
             
             # Step 5: Generate reports
             logger.info("\n[STEP 5] Generating reports...")
@@ -83,12 +97,15 @@ class LogAnalyzerAI:
             
             logger.info("\n" + "="*80)
             logger.info("Analysis complete!")
+            analysis = self._generate_executive_report(self.results)
             logger.info("="*80)
-            
+            logger.info(f"\n[SUCCESS] Analysis complete. Processes {analysis}")
+            # self.results.append({"aiInsights": analysis})
         except Exception as e:
             logger.error(f"Fatal error during analysis: {e}", exc_info=True)
             print(f"\n{ReportGenerator.RED}ERROR: {e}{ReportGenerator.RESET}")
             sys.exit(1)
+        return self.results
     
     def _parse_logs(self):
         """Parse CSV logs and extract data"""
@@ -104,7 +121,7 @@ class LogAnalyzerAI:
             logger.error(f"Invalid CSV format: {e}")
             raise
     
-    def _enrich_and_classify(self, ips: list):
+    def _enrich_and_classify(self, ips: list)-> Dict[str, list]:
         """
         Enrich IPs with threat intelligence and classify them
         
@@ -120,6 +137,7 @@ class LogAnalyzerAI:
                 # Enrich IP
                 enriched_data = self.enricher.enrich_ip(ip)
                 
+                logger.info(f"Enriched data for ----------------{ip}: {enriched_data}")
                 # Classify
                 classification, reasoning = RuleEngine.classify_ip(enriched_data)
                 
@@ -150,6 +168,7 @@ class LogAnalyzerAI:
                     'virustotal': {'status': 'error'},
                     'abuseipdb': {'status': 'error'}
                 })
+        return self.results
     
     def _generate_reports(self):
         """Generate and display analysis reports"""
@@ -181,7 +200,179 @@ class LogAnalyzerAI:
         
         logger.info(f"\n[SUCCESS] Analysis complete. Processed {len([r for r in self.results if 'ip' in r])} IPs")
 
+    def _generate_executive_report(self, analysis_results: list) -> dict:
+        try:
+            logger.info("Generating Executive SOC Report...")
 
+            prompt = f"""
+                    You are a Senior SOC Analyst with 20 years of experience.
+
+                        Your task is to investigate the following firewall/network logs.
+
+                        Raw Logs:
+                        {self}
+
+                        Threat Intelligence Results:
+                        {analysis_results}
+
+                        Perform a complete SOC investigation.
+                        and find out the pattern and reasons using that summary and the logs because some finding 
+                        may be false positive and some may be true positive. So you need to find out the pattern and reason for that also for RAC you'll 
+                        have to find out why the particular action has been taken on it. 
+
+                        Generate ONLY valid JSON.
+
+                        Return the following structure:
+
+                        {{
+                            "executive_summary": "...",
+                            "risk_level": "Critical | High | Medium | Low",
+                            "overall_assessment":"...",
+
+                            "findings":[
+                                "...",
+                                "...",
+                                "..."
+                            ],
+
+                            "attack_patterns":[
+                                {{
+                                    "pattern":"...",
+                                    "description":"..."
+                                }}
+                            ],
+
+                            "anomalies":[
+                                "...",
+                                "..."
+                            ],
+
+                            "suspicious_behaviors":[
+                                "...",
+                                "..."
+                            ],
+
+                            "possible_attack_types":[
+                                "Port Scan",
+                                "Brute Force",
+                                "Bot Activity",
+                                "Malware Communication",
+                                "Data Exfiltration",
+                                "Beaconing",
+                                "C2 Communication"
+                            ],
+
+                            "affected_assets":[
+                                "...",
+                                "..."
+                            ],
+
+                            "ioc_summary":{{
+                                "malicious_ips":0,
+                                "suspicious_ips":0,
+                                "clean_ips":0,
+                                "unknown_ips":0
+                            }},
+
+                            "timeline_analysis":"...",
+
+                            "communication_analysis":"...",
+
+                            "recommended_actions":[
+                                "...",
+                                "...",
+                                "..."
+                            ],
+
+                            "mitre_attack":[
+                                {{
+                                    "tactic":"...",
+                                    "technique":"...",
+                                    "id":"..."
+                                }}
+                            ],
+
+                            "priority_actions":[
+                                "...",
+                                "...",
+                                "..."
+                            ]
+                        }}
+                        """
+
+            stream = client.chat(
+                model="gpt-oss:120b",
+                messages=[
+                    {
+                        "role": "user",
+                        "content": prompt
+                    }
+                ],
+                options={
+                    "temperature": 0.2
+                },
+                stream=True
+            )
+
+            full_response = ""
+
+            for chunk in stream:
+                if chunk.get("message") and chunk["message"].get("content"):
+                    token = chunk["message"]["content"]
+                    full_response += token
+
+                    # Optional: Show progress in console
+                    print(token, end="", flush=True)
+
+            print()
+
+            report = json.loads(full_response)
+
+            logger.info("Executive SOC Report generated successfully.")
+
+            return report
+
+        except json.JSONDecodeError as e:
+            logger.exception(f"JSON Parsing Error: {e}")
+
+            return {
+                "executive_summary": "Invalid JSON returned by model.",
+                "risk_level": "Unknown",
+                "overall_assessment": "",
+                "findings": [],
+                "attack_patterns": [],
+                "anomalies": [],
+                "suspicious_behaviors": [],
+                "possible_attack_types": [],
+                "affected_assets": [],
+                "ioc_summary": {},
+                "timeline_analysis": "",
+                "communication_analysis": "",
+                "recommended_actions": [],
+                "mitre_attack": [],
+                "priority_actions": []
+            }
+
+        except Exception as e:
+            logger.exception(f"Executive report generation failed: {e}")
+
+            return {
+                "executive_summary": "Unable to generate report.",
+                "risk_level": "Unknown",
+                "overall_assessment": "",
+                "findings": [],
+                "attack_patterns": [],
+                "anomalies": [],
+                "suspicious_behaviors": [],
+                "possible_attack_types": [],
+                "affected_assets": [],
+                "ioc_summary": {},
+                "timeline_analysis": "",
+                "communication_analysis": "",
+                "recommended_actions": [],
+                "mitre_attack": [],
+                "priority_actions": []
+            }
 def main():
     """Main entry point"""
     
