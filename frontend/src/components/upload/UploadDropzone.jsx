@@ -16,7 +16,7 @@ export default function UploadDropzone({ onFileSelect }) {
     >
       <input {...getInputProps()} />
 
-      <h2 className="text-2xl text-white">
+      <h2 className="text-2xl text-black">
         {filename
           ? `${filename} Uploaded`
           : "Drag and drop your log file here, or click to select a file to upload."}
