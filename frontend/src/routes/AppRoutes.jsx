@@ -15,7 +15,7 @@ export default function AppRoutes() {
         <Route path="/incidents" element={<Incidents />} />
         <Route path="/investigator" element={<AIInvestigator />} />
         <Route path="/reports" element={<Reports />} /> */}
-        <Route path="/upload" element={<Upload />} />
+        <Route path="/" element={<Upload />} />
         {/* <Route path="/settings" element={<Settings />} /> */}
       </Routes>
     </BrowserRouter>
