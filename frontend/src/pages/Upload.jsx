@@ -65,10 +65,13 @@ export default function Upload() {
 
       setProgress(20);
 
-      const response = await fetch("http://127.0.0.1:8000/analyze", {
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch(
+        "https://nldc-loganalyzer.onrender.com/analyze",
+        {
+          method: "POST",
+          body: formData,
+        },
+      );
 
       if (!response.ok) {
         throw new Error("Failed to analyze logs");
@@ -110,7 +113,7 @@ export default function Upload() {
 
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/analyze/${sessionId}/executive-report/stream`,
+        `https://nldc-loganalyzer.onrender.com/analyze/${sessionId}/executive-report/stream`,
       );
 
       if (!response.ok || !response.body) {
